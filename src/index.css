@@ -1,0 +1,17 @@
+html, body {
+    width: 100%;
+    min-width: 320px;
+
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-family: sans-serif;
+    background-color: #f2f2f2;
+	
+	background: #f9f9f9;
+	background: -moz-linear-gradient(top, #f9f9f9 0%, #e2e2e2 100%);
+	background: -webkit-linear-gradient(top, #f9f9f9 0%,#e2e2e2 100%);
+	background: linear-gradient(to bottom, #f9f9f9 0%,#e2e2e2 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#e2e2e2',GradientType=0 );
+}
