@@ -25,7 +25,7 @@ module.exports = {
     watchContentBase: true,
     hot: true,
     publicPath: publicPath,
-    quiet: true,
+    quiet: false,
     https: false,
     host: '0.0.0.0',
     overlay: false,
@@ -38,15 +38,15 @@ module.exports = {
   module: {
     rules: [
         // TODO
-      /*{
+      {
         test: /\.(js|jsx|mjs)$/,
         include: resolve('src'),
         loader: require.resolve('eslint-loader'),
         enforce: 'pre',
         options: {
-            // eslintPath: require.resolve('eslint'),
+          emitWarning: true,
         },
-      },*/
+      },
       {
         test: /\.(js|jsx|mjs)$/,
         include: resolve('src'),
