@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --inline --progress --config ./config/webpack.config.dev.js",
-    "build": "node scripts/build.js"
+    "build": "webpack --config ./config/webpack.config.prod.js"
   },
   "author": "banana_Ai & Alexander LN",
   "license": "GPL-3.0-or-later",

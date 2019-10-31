@@ -37,7 +37,6 @@ module.exports = {
   },
   module: {
     rules: [
-        // TODO
       {
         test: /\.(js|jsx|mjs)$/,
         include: resolve('src'),
