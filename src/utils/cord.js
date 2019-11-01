@@ -23,8 +23,19 @@ export default class Cord {
   }
 
   moveToDirection(dir) {
+    return this.add(Cord.fromDirection(dir));
+  }
+
+  add(cord) {
+    return new Cord(this.x + cord.x, this.y + cord.y);
+  }
+
+  static fromDirection(dir) {
+    if (dir < 0 || dir >= 4) {
+      throw new Error('Direction must be between 0 and 3');
+    }
     const mv = DIRS[4][dir];
-    return new Cord(this.x + mv[0], this.y + mv[1]);
+    return new Cord(mv[0], mv[1]);
   }
 
   equals(cord) {

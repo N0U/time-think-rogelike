@@ -1,4 +1,4 @@
-import { cordsInRectangle } from './cord';
+import { cordsInRectangle } from './utils/cord';
 
 export default class Map {
   constructor(game) {

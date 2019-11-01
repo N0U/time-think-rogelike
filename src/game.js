@@ -1,5 +1,5 @@
 import { Display, Scheduler, Engine } from 'rot-js';
-import Cord from './cord';
+import Cord from './utils/cord';
 import Map from './map';
 import Player from './actors/player';
 
