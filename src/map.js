@@ -32,6 +32,8 @@ export default class Map {
     const tile = this.getTile(cord);
     if (tile) {
       this.game.display.draw(cord.x, cord.y, tile.symbol, tile.fgColor, tile.bgColor);
+    } else {
+      this.game.display.draw(cord.x, cord.y, ' ');
     }
   }
 }
