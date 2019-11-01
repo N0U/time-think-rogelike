@@ -36,4 +36,9 @@ export default class Map {
       this.game.display.draw(cord.x, cord.y, ' ');
     }
   }
+
+  isFree(cord) {
+    const tile = this.getTile(cord);
+    return !tile || !tile.isWall;
+  }
 }

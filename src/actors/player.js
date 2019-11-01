@@ -1,19 +1,10 @@
 import { KEYS } from 'rot-js';
+import Entity from './entity';
+import Box from './box';
 
-export default class Player {
+export default class Player extends Entity {
   constructor(game, cord) {
-    this.game = game;
-    this.prevCord = cord;
-    this.cord = cord;
-    this.draw();
-  }
-
-  draw() {
-    if (!this.prevCord.equals(this.cord)) {
-      this.game.redrawBackground(this.prevCord);
-    }
-    this.game.display.draw(this.cord.x, this.cord.y, '@');
-    this.prevCord = this.cord;
+    super(game, cord, '@');
   }
 
   act() {
@@ -21,19 +12,30 @@ export default class Player {
     window.addEventListener('keydown', this);
   }
 
-  handleEvent(e) {
+  handleEvent(event) {
     const keyMap = {};
     keyMap[KEYS.VK_UP] = 0;
     keyMap[KEYS.VK_RIGHT] = 1;
     keyMap[KEYS.VK_DOWN] = 2;
     keyMap[KEYS.VK_LEFT] = 3;
 
-    const code = e.keyCode;
+    const code = event.keyCode;
 
     if (!(code in keyMap)) { return; }
 
-    this.cord = this.cord.moveToDirection(keyMap[code]);
-    this.draw();
+    const dir = keyMap[code];
+    const newCord = this.cord.moveToDirection(keyMap[code]);
+    const collision = this.game.checkCollision(newCord);
+    if (!collision) {
+      this.cord = newCord;
+      this.draw();
+    } else if (collision instanceof Box) {
+      const e = collision;
+      if (e.push(dir)) {
+        this.cord = newCord;
+        this.draw();
+      }
+    }
     this.game.engine.unlock();
   }
 }
