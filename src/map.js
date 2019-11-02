@@ -8,8 +8,10 @@ export default class Map {
     for (const c of cordsInRectangle(0, 0, 50, 50)) {
       if (c.x === 0 || c.y === 0 || c.x === 49 || c.y === 49) {
         this.set(c, { isWall: true, symbol: '#' });
-        this.redrawTile(c);
+      } else {
+        this.set(c, { isWall: false, symbol: '.', fgColor: 'gray' });
       }
+      this.redrawTile(c);
     }
   }
 
