@@ -42,6 +42,5 @@ export default class Player extends Entity {
 
   move(cord) {
     this.cord = cord;
-    this.draw();
   }
 }

@@ -30,6 +30,10 @@ export default class Cord {
     return new Cord(this.x + cord.x, this.y + cord.y);
   }
 
+  sub(cord) {
+    return new Cord(this.x - cord.x, this.y - cord.y);
+  }
+
   static fromDirection(dir) {
     if (dir < 0 || dir >= 4) {
       throw new Error('Direction must be between 0 and 3');
@@ -47,12 +51,10 @@ export default class Cord {
   }
 }
 
-export function* cordsInRectangle(x, y, w, h) {
-  const x1 = x + w;
-  const y1 = y + h;
-  for (let i = x; i < x1; i += 1) {
-    for (let j = y; j < y1; j += 1) {
-      yield new Cord(i, j);
+export function* cordsInRectangle(x0, y0, x1, y1) {
+  for (let x = x0; x <= x1; x += 1) {
+    for (let y = y0; y <= y1; y += 1) {
+      yield new Cord(x, y);
     }
   }
 }

@@ -14,7 +14,6 @@ export default class Box extends Entity {
       if (!collision) {
         const e = new MoveEvent(this, this.cord, newCord);
         this.cord = newCord;
-        this.draw();
         this.game.emit(e);
       }
     }

@@ -29,6 +29,7 @@ export default class Game {
   loop() {
     while (!this.lock) {
       this.eventBus.loop();
+      this.render();
       const actor = this.scheduler.next();
       if (!actor) {
         break;
@@ -52,11 +53,19 @@ export default class Game {
     window.removeEventListener('keydown', this);
     this.lock = false;
     this.loop();
-    // redraw here
+  }
+
+  render() {
+    this.display.clear();
+    const offset = this.player.cord.sub(new Cord(40, 15));
+    this.map.render(offset);
+    for (const e of this.entities) {
+      e.render(offset);
+    }
   }
 
   redrawBackground(cord) {
-    this.map.redrawTile(cord);
+    //this.map.redrawTile(cord);
   }
 
   addEntity(entity) {

@@ -3,21 +3,16 @@ import _ from 'lodash';
 export default class Entity {
   constructor(game, cord, symbol, color = 'white') {
     this.game = game;
-    this.prevCord = cord;
     this.cord = cord;
     this.symbol = symbol;
     this.color = color;
     this._call_action = [];
     this.actions = {};
-    this.draw();
   }
 
-  draw() {
-    if (!this.prevCord.equals(this.cord)) {
-      this.game.redrawBackground(this.prevCord);
-    }
-    this.game.display.draw(this.cord.x, this.cord.y, this.symbol, this.color);
-    this.prevCord = this.cord;
+  render(offset) {
+    const gCord = this.cord.sub(offset);
+    this.game.display.draw(gCord.x, gCord.y, this.symbol, this.color);
   }
 
   onEvent(onEvent) {
