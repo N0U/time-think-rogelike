@@ -5,8 +5,8 @@ const path = require('path');
 const publicPath = '/';
 const publicUrl = '';
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+function resolve(dir) {
+  return path.join(__dirname, '..', dir);
 }
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
     publicPath: publicPath,
     quiet: false,
     https: false,
-    host: '0.0.0.0',
+    host: '127.0.0.1',
     overlay: false,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.

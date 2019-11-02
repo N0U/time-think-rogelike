@@ -15,6 +15,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    "no-restricted-syntax": ["off", "ForOfStatement"]
+    "no-restricted-syntax": ["off", "ForOfStatement"],
+    "linebreak-style": 0
   },
 };
