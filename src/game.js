@@ -1,7 +1,9 @@
 import { Display, Scheduler, Engine } from 'rot-js';
 import Cord from './utils/cord';
+import EventBus from './event-bus';
+import InputEvent from './events/input-event';
 import Map from './map';
-import Player from './actors/player';
+import Player from './actors/player/player';
 import Box from './actors/box';
 
 export default class Game {
@@ -9,6 +11,8 @@ export default class Game {
     this.display = new Display({ width: 80, height: 30 });
     this.scheduler = new Scheduler.Simple();
     this.engine = new Engine(this.scheduler);
+    this.eventBus = new EventBus();
+    this.eventBus.subscribe(this);
     this.entities = new Set();
   }
 
@@ -18,8 +22,25 @@ export default class Game {
     for (let i = 0; i < 10; i += 1) {
       this.addEntity(new Box(this, new Cord(12, 10 + i)));
     }
-    this.scheduler.add(this.player, true);
     this.engine.start();
+  }
+
+  waitInput() {
+    this.engine.lock();
+    window.addEventListener('keydown', this);
+  }
+
+  emit(e) {
+    this.eventBus.emit(e);
+  }
+
+  handleEvent(event) {
+    const inputEvent = new InputEvent(this, event.keyCode);
+    this.emit(inputEvent);
+    this.eventBus.loop();
+    window.removeEventListener('keydown', this);
+    this.engine.unlock();
+    // redraw here
   }
 
   redrawBackground(cord) {
@@ -28,6 +49,12 @@ export default class Game {
 
   addEntity(entity) {
     this.entities.add(entity);
+    if (entity.act) {
+      this.scheduler.add(entity, true);
+    }
+    if (entity.onEvent) {
+      this.eventBus.subscribe(entity);
+    }
     return entity;
   }
 
@@ -41,5 +68,10 @@ export default class Game {
       }
     }
     return false;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  onEvent(e) {
+    console.log(e.toString());
   }
 }
