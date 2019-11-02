@@ -1,6 +1,7 @@
 export default class Event {
   constructor(source) {
     this.source = source;
+    this.data = {};
   }
 
   toString() {

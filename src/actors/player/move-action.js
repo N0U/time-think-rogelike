@@ -3,20 +3,19 @@ import PushEvent from '../../events/push-event';
 import MoveEvent from '../../events/move-event';
 
 export default class MoveAction {
-  constructor(entity, direction) {
+  constructor(entity) {
     this.entity = entity;
-    this.direction = direction;
   }
 
-  perform() {
-    const newCord = this.entity.cord.moveToDirection(this.direction);
+  perform(event) {
+    const newCord = this.entity.cord.moveToDirection(event.data.direction);
     this.newCord = newCord;
     const collision = this.entity.game.checkCollision(newCord);
     if (!collision) {
       this.entity.move(newCord);
     } else if (collision instanceof Box) {
       this.collision = collision;
-      this.entity.game.emit(new PushEvent(this, collision, this.direction));
+      this.entity.game.emit(new PushEvent(this.entity, collision, event.data.direction));
     }
   }
 
