@@ -1,5 +1,6 @@
 import Entity from './entity';
 import PushEvent from '../events/push-event';
+import MoveEvent from '../events/move-event';
 
 export default class Box extends Entity {
   constructor(game, cord) {
@@ -11,11 +12,10 @@ export default class Box extends Entity {
       const newCord = this.cord.moveToDirection(event.direction);
       const collision = this.game.checkCollision(newCord);
       if (!collision) {
+        const e = new MoveEvent(this, this.cord, newCord);
         this.cord = newCord;
         this.draw();
-        event.done(true);
-      } else {
-        event.done(false);
+        this.game.emit(e);
       }
     }
   }

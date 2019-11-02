@@ -3,17 +3,24 @@ import Entity from '../entity';
 import Box from '../box';
 import InputEvent from '../../events/input-event';
 import PushEvent from '../../events/push-event';
+import MoveAction from './move-action';
 
 export default class Player extends Entity {
   constructor(game, cord) {
     super(game, cord, '@');
+    this.action = null;
   }
 
   act() {
+    this.action = null;
     this.game.waitInput();
   }
 
   onEvent(event) {
+    if (this.action && this.action.onEvent(event)) {
+      return; // Event handled by action
+    }
+
     if (event instanceof InputEvent) {
       const keyMap = {};
       keyMap[KEYS.VK_UP] = 0;
@@ -21,26 +28,17 @@ export default class Player extends Entity {
       keyMap[KEYS.VK_DOWN] = 2;
       keyMap[KEYS.VK_LEFT] = 3;
       if (!(event.keyCode in keyMap)) {
-        event.done(false);
         return;
       }
 
       const dir = keyMap[event.keyCode];
-      const newCord = this.cord.moveToDirection(dir);
-      const collision = this.game.checkCollision(newCord);
-      if (!collision) {
-        this.cord = newCord;
-        this.draw();
-      } else if (collision instanceof Box) {
-        const e = collision;
-        this.game.emit(new PushEvent(this, e, dir, (r) => {
-          if (r) {
-            this.cord = newCord;
-            this.draw();
-          }
-        }));
-      }
-      event.done(true);
+      this.action = new MoveAction(this, dir);
+      this.action.perform();
     }
+  }
+
+  move(cord) {
+    this.cord = cord;
+    this.draw();
   }
 }

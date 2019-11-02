@@ -1,4 +1,4 @@
-import { Display, Scheduler, Engine } from 'rot-js';
+import { Display, Scheduler } from 'rot-js';
 import Cord from './utils/cord';
 import EventBus from './event-bus';
 import InputEvent from './events/input-event';
@@ -10,10 +10,10 @@ export default class Game {
   constructor() {
     this.display = new Display({ width: 80, height: 30 });
     this.scheduler = new Scheduler.Simple();
-    this.engine = new Engine(this.scheduler);
     this.eventBus = new EventBus();
     this.eventBus.subscribe(this);
     this.entities = new Set();
+    this.lock = false;
   }
 
   run() {
@@ -22,11 +22,23 @@ export default class Game {
     for (let i = 0; i < 10; i += 1) {
       this.addEntity(new Box(this, new Cord(12, 10 + i)));
     }
-    this.engine.start();
+
+    this.loop();
+  }
+
+  loop() {
+    while (!this.lock) {
+      this.eventBus.loop();
+      const actor = this.scheduler.next();
+      if (!actor) {
+        break;
+      }
+      actor.act();
+    }
   }
 
   waitInput() {
-    this.engine.lock();
+    this.lock = true;
     window.addEventListener('keydown', this);
   }
 
@@ -37,9 +49,9 @@ export default class Game {
   handleEvent(event) {
     const inputEvent = new InputEvent(this, event.keyCode);
     this.emit(inputEvent);
-    this.eventBus.loop();
     window.removeEventListener('keydown', this);
-    this.engine.unlock();
+    this.lock = false;
+    this.loop();
     // redraw here
   }
 
