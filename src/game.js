@@ -29,7 +29,6 @@ export default class Game {
   loop() {
     while (!this.lock) {
       this.eventBus.loop();
-      this.render();
       const actor = this.scheduler.next();
       if (!actor) {
         break;
@@ -39,6 +38,7 @@ export default class Game {
   }
 
   waitInput() {
+    this.render();
     this.lock = true;
     window.addEventListener('keydown', this);
   }
