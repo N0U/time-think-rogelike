@@ -8,18 +8,15 @@ import MoveAction from './move-action';
 export default class Player extends Entity {
   constructor(game, cord) {
     super(game, cord, '@');
-    this.action = null;
-    this.actions = { InputEvent: [MoveAction] };
   }
 
   act() {
-    this._call_action = [];
     this.game.waitInput();
   }
 
   onEvent(event) {
-    if (this._call_action && this._call_action.forEach((action) => action.onEvent(event))) {
-      return; // Event handled by action
+    if(super.onEvent(event)) {
+      return true;
     }
 
     if (event instanceof InputEvent) {
@@ -31,9 +28,9 @@ export default class Player extends Entity {
       if (!(event.keyCode in keyMap)) {
         return;
       }
-      event.data.direction = keyMap[event.keyCode];
-      this.runEvent(event.constructor.name, event);
-
+      const action = new MoveAction(this, keyMap[event.keyCode]);
+      action.perform();
+      this.actions.push(action);
     }
 
     super.onEvent(event);

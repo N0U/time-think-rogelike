@@ -6,8 +6,7 @@ export default class Entity {
     this.cord = cord;
     this.symbol = symbol;
     this.color = color;
-    this._call_action = [];
-    this.actions = {};
+    this.actions = [];
   }
 
   render(offset) {
@@ -15,16 +14,16 @@ export default class Entity {
     this.game.display.draw(gCord.x, gCord.y, this.symbol, this.color);
   }
 
-  onEvent(onEvent) {
-    this.runEvent('', onEvent);
+  resetActions() {
+    this.actions = [];
   }
 
-  runEvent(eventType, event) {
-    this.actions[eventType] && this.actions[eventType].forEach((actionClass) => {
-      // eslint-disable-next-line new-cap
-      const action = new actionClass(this);
-      this._call_action.push(action);
-      action.perform(event);
-    });
+  onEvent(event) {
+    for (const a of this.actions) {
+      if (a.onEvent(event)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

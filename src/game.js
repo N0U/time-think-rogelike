@@ -29,6 +29,7 @@ export default class Game {
   loop() {
     while (!this.lock) {
       this.eventBus.loop();
+      this.entities.forEach(e => e.resetActions());
       const actor = this.scheduler.next();
       if (!actor) {
         break;

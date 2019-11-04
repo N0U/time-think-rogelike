@@ -8,6 +8,10 @@ export default class Box extends Entity {
   }
 
   onEvent(event) {
+    if(super.onEvent(event)) {
+      return true;
+    }
+
     if (event instanceof PushEvent && event.entity === this) {
       const newCord = this.cord.moveToDirection(event.direction);
       const collision = this.game.checkCollision(newCord);
