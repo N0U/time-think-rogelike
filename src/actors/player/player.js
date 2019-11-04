@@ -1,8 +1,6 @@
 import { KEYS } from 'rot-js';
 import Entity from '../entity';
-import Box from '../box';
 import InputEvent from '../../events/input-event';
-import PushEvent from '../../events/push-event';
 import MoveAction from './move-action';
 
 export default class Player extends Entity {
@@ -15,7 +13,7 @@ export default class Player extends Entity {
   }
 
   onEvent(event) {
-    if(super.onEvent(event)) {
+    if (super.onEvent(event)) {
       return true;
     }
 
@@ -26,14 +24,14 @@ export default class Player extends Entity {
       keyMap[KEYS.VK_DOWN] = 2;
       keyMap[KEYS.VK_LEFT] = 3;
       if (!(event.keyCode in keyMap)) {
-        return;
+        return false;
       }
       const action = new MoveAction(this, keyMap[event.keyCode]);
       action.perform();
       this.actions.push(action);
+      return true;
     }
-
-    super.onEvent(event);
+    return false;
   }
 
 

@@ -8,7 +8,7 @@ export default class Box extends Entity {
   }
 
   onEvent(event) {
-    if(super.onEvent(event)) {
+    if (super.onEvent(event)) {
       return true;
     }
 
@@ -19,7 +19,9 @@ export default class Box extends Entity {
         const e = new MoveEvent(this, this.cord, newCord);
         this.cord = newCord;
         this.game.emit(e);
+        return true;
       }
     }
+    return false;
   }
 }

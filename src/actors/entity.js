@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default class Entity {
   constructor(game, cord, symbol, color = 'white') {
     this.game = game;

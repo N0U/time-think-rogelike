@@ -29,7 +29,7 @@ export default class Game {
   loop() {
     while (!this.lock) {
       this.eventBus.loop();
-      this.entities.forEach(e => e.resetActions());
+      this.entities.forEach((e) => e.resetActions());
       const actor = this.scheduler.next();
       if (!actor) {
         break;
@@ -63,10 +63,6 @@ export default class Game {
     for (const e of this.entities) {
       e.render(offset);
     }
-  }
-
-  redrawBackground(cord) {
-    //this.map.redrawTile(cord);
   }
 
   addEntity(entity) {
