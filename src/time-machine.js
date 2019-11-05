@@ -33,7 +33,7 @@ export default class TimeMachine {
     if (n > this.worldSnapshots.length) {
       throw new Error(`Cannot forget more elements than there are in history`);
     }
-    this.worldSnapshots = this.worldSnapshots.slice(0, this.worldSnapshots.length - n);
+    this.worldSnapshots = this.worldSnapshots.slice(0, this.worldSnapshots.length - n - 1);
   }
 
   getHistoryLength() {

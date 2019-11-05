@@ -61,6 +61,7 @@ export default class Game {
     if (event.keyCode in keyMap) {
       if (this.timeTravel) {
         this.timeMachine.forgetAfter(this.timeTravel);
+        this.timeMachine.saveWorld();
         this.timeTravel = null;
       }
 
