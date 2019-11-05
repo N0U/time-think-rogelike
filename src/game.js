@@ -1,10 +1,11 @@
-import { Display, Scheduler } from 'rot-js';
+import {Display, KEYS, Scheduler} from 'rot-js';
 import Cord from './utils/cord';
 import EventBus from './event-bus';
-import InputEvent from './events/input-event';
+import MoveInputEvent from './events/move-input-event';
 import Map from './map';
 import Player from './actors/player/player';
 import Box from './actors/box';
+import TimeMachine from './time-machine';
 
 export default class Game {
   constructor() {
@@ -13,7 +14,9 @@ export default class Game {
     this.eventBus = new EventBus();
     this.eventBus.subscribe(this);
     this.entities = new Set();
+    this.timeMachine = new TimeMachine();
     this.lock = false;
+    this.timeTravel = null;
   }
 
   run() {
@@ -39,6 +42,7 @@ export default class Game {
   }
 
   waitInput() {
+    this.timeMachine.saveWorld();
     this.render();
     this.lock = true;
     window.addEventListener('keydown', this);
@@ -49,11 +53,45 @@ export default class Game {
   }
 
   handleEvent(event) {
-    const inputEvent = new InputEvent(this, event.keyCode);
-    this.emit(inputEvent);
-    window.removeEventListener('keydown', this);
-    this.lock = false;
-    this.loop();
+    const keyMap = {};
+    keyMap[KEYS.VK_UP] = 0;
+    keyMap[KEYS.VK_RIGHT] = 1;
+    keyMap[KEYS.VK_DOWN] = 2;
+    keyMap[KEYS.VK_LEFT] = 3;
+    if (event.keyCode in keyMap) {
+      if (this.timeTravel) {
+        this.timeMachine.forgetAfter(this.timeTravel);
+        this.timeTravel = null;
+      }
+
+      const moveInputEvent = new MoveInputEvent(this, keyMap[event.keyCode]);
+      this.emit(moveInputEvent);
+      window.removeEventListener('keydown', this);
+      this.lock = false;
+      this.loop();
+      return;
+    }
+
+    if (event.keyCode === KEYS.VK_Q && this.timeTravel === null) {
+      this.timeTravel = 0;
+    }
+
+    if (this.timeTravel !== null) {
+      switch (event.keyCode) {
+        case KEYS.VK_Q:
+          if (this.timeMachine.getHistoryLength() > this.timeTravel + 1) {
+            this.timeTravel += 1;
+          }
+          break;
+        case KEYS.VK_W:
+          if (this.timeTravel > 0) {
+            this.timeTravel -= 1;
+          }
+          break;
+      }
+      this.timeMachine.restoreWorld(this.timeTravel);
+      this.render();
+    }
   }
 
   render() {
@@ -63,10 +101,21 @@ export default class Game {
     for (const e of this.entities) {
       e.render(offset);
     }
+
+    // UI render
+    const color = this.timeTravel !== null ? 'blue' : 'white';
+    const pos = this.timeMachine.getHistoryLength() - (this.timeTravel || 0) - 1;
+    this.display.draw(1, 0, '[', color, 'gray');
+    let i;
+    for (i = 0; i < this.timeMachine.getHistoryLength(); i += 1) {
+      this.display.draw(2 + i, 0, pos === i ? '@' : '*', color, 'gray');
+    }
+    this.display.draw(2 + i, 0, ']', color, 'gray');
   }
 
   addEntity(entity) {
     this.entities.add(entity);
+    this.timeMachine.add(entity);
     if (entity.act) {
       this.scheduler.add(entity, true);
     }

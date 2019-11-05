@@ -5,6 +5,7 @@ export default class Entity {
     this.symbol = symbol;
     this.color = color;
     this.actions = [];
+    this.dead = false;
   }
 
   render(offset) {
@@ -23,5 +24,22 @@ export default class Entity {
       }
     }
     return false;
+  }
+
+  serialize() {
+    const { cord, symbol, color, dead } = this;
+    return {
+      cord,
+      symbol,
+      color,
+      dead,
+    };
+  }
+
+  deserialize(o) {
+    this.cord = o.cord;
+    this.symbol = o.symbol;
+    this.color = o.color;
+    this.dead = o.dead;
   }
 }
