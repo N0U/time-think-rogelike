@@ -13,12 +13,11 @@ export default class Player extends Entity {
     this.game.waitInput();
   }
 
-  render(offset) {
-    super.render(offset);
+  draw(drawer) {
+    super.draw(drawer);
 
     if (this.prevCord) {
-      const gCord = this.prevCord.sub(offset);
-      this.game.display.draw(gCord.x, gCord.y, this.symbol, 'blue');
+      drawer.draw(this.prevCord, this.symbol, 'blue');
     }
   }
 

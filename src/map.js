@@ -37,12 +37,11 @@ export default class Map {
     return this.map[cord.toId()];
   }
 
-  render(offset) {
+  draw(drawer) {
     for (const c of cordsInRectangle(this.minX, this.minY, this.maxX, this.maxY)) {
       const tile = this.getTile(c);
       if (tile) {
-        const gCord = c.sub(offset);
-        this.game.display.draw(gCord.x, gCord.y, tile.symbol, tile.fgColor, tile.bgColor);
+        drawer.draw(c, tile.symbol, tile.fgColor, tile.bgColor);
       }
     }
   }

@@ -8,9 +8,8 @@ export default class Entity {
     this.dead = false;
   }
 
-  render(offset) {
-    const gCord = this.cord.sub(offset);
-    this.game.display.draw(gCord.x, gCord.y, this.symbol, this.color);
+  draw(drawer) {
+    drawer.draw(this.cord, this.symbol, this.color);
   }
 
   resetActions() {

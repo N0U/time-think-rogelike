@@ -6,10 +6,14 @@ import Map from './map';
 import Player from './actors/player/player';
 import Box from './actors/box';
 import TimeMachine from './time-machine';
+import DisplayDrawer from './graphics/display-drawer';
+import Drawer from './graphics/drawer';
 
 export default class Game {
   constructor() {
-    this.display = new Display({ width: 80, height: 30 });
+    this.drawer = new DisplayDrawer();
+    this.gameDrawer = new Drawer(this.drawer);
+    this.uiDrawer = new Drawer(this.drawer);
     this.scheduler = new Scheduler.Simple();
     this.eventBus = new EventBus();
     this.eventBus.subscribe(this);
@@ -43,7 +47,7 @@ export default class Game {
 
   waitInput() {
     this.timeMachine.saveWorld();
-    this.render();
+    this.draw();
     this.lock = true;
     window.addEventListener('keydown', this);
   }
@@ -91,27 +95,27 @@ export default class Game {
           break;
       }
       this.timeMachine.restoreWorld(this.timeTravel);
-      this.render();
+      this.draw();
     }
   }
 
-  render() {
-    this.display.clear();
-    const offset = this.player.cord.sub(new Cord(40, 15));
-    this.map.render(offset);
+  draw() {
+    this.drawer.clear();
+    this.gameDrawer.offset = this.player.cord.sub(new Cord(40, 15));
+    this.map.draw(this.gameDrawer);
     for (const e of this.entities) {
-      e.render(offset);
+      e.draw(this.gameDrawer);
     }
 
-    // UI render
+    // UI draw
     const color = this.timeTravel !== null ? 'blue' : 'white';
     const pos = this.timeMachine.getHistoryLength() - (this.timeTravel || 0) - 1;
-    this.display.draw(1, 0, '[', color, 'gray');
+    this.uiDrawer.draw(new Cord(1, 0), '[', color, 'gray');
     let i;
     for (i = 0; i < this.timeMachine.getHistoryLength(); i += 1) {
-      this.display.draw(2 + i, 0, pos === i ? '@' : '*', color, 'gray');
+      this.uiDrawer.draw(new Cord(2 + i, 0), pos === i ? '@' : '*', color, 'gray');
     }
-    this.display.draw(2 + i, 0, ']', color, 'gray');
+    this.uiDrawer.draw(new Cord(2 + i, 0), ']', color, 'gray');
   }
 
   addEntity(entity) {
