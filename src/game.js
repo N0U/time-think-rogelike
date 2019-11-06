@@ -1,13 +1,12 @@
-import {Display, KEYS, Scheduler} from 'rot-js';
+import { Display, KEYS, Scheduler } from 'rot-js';
 import Cord from './utils/cord';
 import EventBus from './event-bus';
 import MoveInputEvent from './events/move-input-event';
-import Map from './map';
 import Player from './actors/player/player';
-import Box from './actors/box';
 import TimeMachine from './time-machine';
 import DisplayDrawer from './graphics/display-drawer';
 import Drawer from './graphics/drawer';
+import LevelLoader from './level-loader';
 
 export default class Game {
   constructor() {
@@ -21,16 +20,17 @@ export default class Game {
     this.timeMachine = new TimeMachine();
     this.lock = false;
     this.timeTravel = null;
+    this.levelLoad = new LevelLoader(this);
   }
 
   run() {
-    this.map = new Map(this);
-    this.player = this.addEntity(new Player(this, new Cord(10, 10)));
-    for (let i = 0; i < 10; i += 1) {
-      this.addEntity(new Box(this, new Cord(12, 10 + i)));
-    }
-
-    this.loop();
+    this.levelLoad.getLevel(0)
+      .then((level) => {
+        this.map = new level.Map(this);
+        level.run(this);
+        this.player = this.addEntity(new Player(this, new Cord(10, 10)));
+        this.loop();
+      });
   }
 
   loop() {
@@ -94,6 +94,7 @@ export default class Game {
           }
           break;
       }
+      this.levelLoad.currentLevel.handleEvent(event);
       this.timeMachine.restoreWorld(this.timeTravel);
       this.draw();
     }
