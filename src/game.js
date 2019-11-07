@@ -64,6 +64,11 @@ export default class Game {
     keyMap[KEYS.VK_LEFT] = 3;
     if (event.keyCode in keyMap) {
       if (this.timeTravel) {
+        const collisions = this.getCollisions();
+        if (collisions.get(this.player.cord.toId()).length > 1) {
+          // conflict!!!
+          return;
+        }
         this.timeMachine.forgetAfter(this.timeTravel);
         this.timeMachine.saveWorld();
         this.timeTravel = null;
@@ -128,6 +133,19 @@ export default class Game {
       this.eventBus.subscribe(entity);
     }
     return entity;
+  }
+
+  getCollisions() {
+    const collisions = new Map();
+    for (const e of this.entities) {
+      const id = e.cord.toId();
+      if (!collisions.has(id)) {
+        collisions.set(id, []);
+      }
+      const list = collisions.get(id);
+      list.push(e);
+    }
+    return collisions;
   }
 
   checkCollision(cord) {
