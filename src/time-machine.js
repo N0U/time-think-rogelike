@@ -1,5 +1,6 @@
 export default class TimeMachine {
-  constructor() {
+  constructor(maxLength) {
+    this.maxLength = maxLength;
     this.serializables = new Set();
     this.worldSnapshots = [];
   }
@@ -17,6 +18,9 @@ export default class TimeMachine {
       snapshot.set(s, s.serialize());
     }
     this.worldSnapshots.push(snapshot);
+    if (this.worldSnapshots.length > this.maxLength) {
+      this.worldSnapshots.shift();
+    }
   }
 
   restoreWorld(n) {
@@ -24,14 +28,14 @@ export default class TimeMachine {
     if (!snapshot) {
       throw new Error(`Invalid snapshot number: ${n}`);
     }
-    for (const [ key, value ] of snapshot) {
+    for (const [key, value] of snapshot) {
       key.deserialize(value);
     }
   }
 
   forgetAfter(n) {
     if (n > this.worldSnapshots.length) {
-      throw new Error(`Cannot forget more elements than there are in history`);
+      throw new Error('Cannot forget more elements than there are in history');
     }
     this.worldSnapshots = this.worldSnapshots.slice(0, this.worldSnapshots.length - n - 1);
   }

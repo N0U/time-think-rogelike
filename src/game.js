@@ -17,7 +17,7 @@ export default class Game {
     this.eventBus = new EventBus();
     this.eventBus.subscribe(this);
     this.entities = new Set();
-    this.timeMachine = new TimeMachine();
+    this.timeMachine = new TimeMachine(10);
     this.lock = false;
     this.timeTravel = null;
     this.levelLoad = new LevelLoader(this);
@@ -94,7 +94,6 @@ export default class Game {
           }
           break;
       }
-      this.levelLoad.currentLevel.handleEvent(event);
       this.timeMachine.restoreWorld(this.timeTravel);
       this.draw();
     }
