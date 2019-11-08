@@ -8,7 +8,7 @@ export class Tile {
   bgColor: string;
   fgColor: string;
 
-  constructor(isWall: boolean, symbol: string, bgColor: string = 'black', fgColor: string = 'white') {
+  constructor({isWall = false, symbol = '', bgColor = 'black', fgColor = 'white'}) {
     this.isWall = isWall;
     this.symbol = symbol;
     this.bgColor = bgColor;
@@ -18,11 +18,11 @@ export class Tile {
 
 export default class GameMap {
   readonly game: Game;
-  private map: any;
-  private minX: number;
-  private minY: number;
-  private maxX: number;
-  private maxY: number;
+  protected map: any;
+  protected minX: number;
+  protected minY: number;
+  protected maxX: number;
+  protected maxY: number;
 
   constructor(game: Game) {
     this.game = game;
@@ -33,9 +33,9 @@ export default class GameMap {
     this.maxY = 0;
     for (const c of cordsInRectangle(0, 0, 50, 50)) {
       if (c.x === 0 || c.y === 0 || c.x === 50 || c.y === 50) {
-        this.set(c, new Tile(true, '#'));
+        this.set(c, new Tile({isWall:true, symbol:'#'}));
       } else {
-        this.set(c, new Tile(false,'.', 'black','gray'));
+        this.set(c, new Tile({isWall:false, symbol:'.', bgColor:'black', fgColor:'gray'}));
       }
     }
   }
