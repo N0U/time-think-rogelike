@@ -12,10 +12,9 @@ function resolve(dir) {
 module.exports = {
   mode: 'development',
   devtool: 'cheap-module-source-map',
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     filename: 'bundle.js',
-    path: resolve('dist'),
   },
   devServer: {
     disableHostCheck: true,
@@ -47,12 +46,9 @@ module.exports = {
         },
       },
       {
-        test: /\.(js|jsx|mjs)$/,
-        include: resolve('src'),
-        loader: require.resolve('babel-loader'),
-        options: {
-          cacheDirectory: true,
-        },
+        test: /\.(ts|tsx)$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
@@ -63,6 +59,9 @@ module.exports = {
       },
     ],
 
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new CleanWebpackPlugin(),

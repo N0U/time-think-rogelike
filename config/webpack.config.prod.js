@@ -5,17 +5,16 @@ const path = require('path');
 const publicPath = '/';
 const publicUrl = '';
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+function resolve(dir) {
+  return path.join(__dirname, '..', dir);
 }
 
 module.exports = {
   mode: 'production',
   devtool: 'cheap-module-source-map',
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     filename: 'bundle.js',
-    path: resolve('dist'),
   },
   devServer: {
     disableHostCheck: true,
@@ -27,7 +26,7 @@ module.exports = {
     publicPath: publicPath,
     quiet: false,
     https: false,
-    host: '0.0.0.0',
+    host: '127.0.0.1',
     overlay: false,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -47,12 +46,9 @@ module.exports = {
         },
       },
       {
-        test: /\.(js|jsx|mjs)$/,
-        include: resolve('src'),
-        loader: require.resolve('babel-loader'),
-        options: {
-          cacheDirectory: true,
-        },
+        test: /\.(ts|tsx)$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
@@ -63,6 +59,9 @@ module.exports = {
       },
     ],
 
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new CleanWebpackPlugin(),

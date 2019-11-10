@@ -1,6 +1,19 @@
 import { DIRS } from 'rot-js';
 
-export default class Cord {
+interface CordInterface {
+    x:number | Cord
+    y:number
+    new (x: number| Cord, y: number): void;
+    toString(): void
+    toId(): void
+    moveToDirection(string): void
+    add(Cord): void
+    sub(Cord): void
+    equals(Cord): void
+}
+
+export default class Cord implements CordInterface {
+    x; y;
   constructor(x, y) {
     if (typeof x === 'number' && typeof y === 'number') {
       this.x = x;
@@ -30,7 +43,7 @@ export default class Cord {
     return new Cord(this.x + cord.x, this.y + cord.y);
   }
 
-  sub(cord) {
+  sub(cord): Cord{
     return new Cord(this.x - cord.x, this.y - cord.y);
   }
 
