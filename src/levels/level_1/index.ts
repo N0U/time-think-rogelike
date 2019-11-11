@@ -1,21 +1,25 @@
 import Box from '../../actors/box';
 import Cord from '../../utils/cord';
-import Level1Map from './map';
+import {BaseLevel, GameConstructor} from "../abc";
+import Game from "../../game";
+import Action from "../../actors/action";
+import GameMap from "../../game-map";
 
-export default class Level {
-  constructor(gameEngine) {
-    this.gameEngine = gameEngine;
-    this.Map = Level1Map;
-    this.actiions = [];
-  }
+export default class Level extends BaseLevel {
+    game: Game;
+    actions: Action[];
+    Map: GameConstructor;
 
-  run() {
-    for (let i = 0; i < 10; i += 1) {
-      this.gameEngine.addEntity(new Box(this.gameEngine, new Cord(12, 10 + i)));
+    constructor(game: Game) {
+        super(game);
+        this.game = game;
+        this.Map = GameMap;
+        this.actions = [];
     }
-  }
 
-  eventHandler(event) {
-
-  }
+    run() {
+        for (let i = 0; i < 10; i += 1) {
+            this.game.addEntity(new Box(this.game, new Cord(12, 10 + i)));
+        }
+    }
 }
