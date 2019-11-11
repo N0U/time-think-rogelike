@@ -11,6 +11,7 @@ import Drawer from './graphics/drawer';
 import Entity from './actors/entity';
 import GameMap from './game-map';
 import GameEvent from "./events/game-event";
+import {BaseLevel} from "./levels/abc";
 
 export default class Game {
   readonly drawer: DisplayDrawer;
@@ -42,9 +43,9 @@ export default class Game {
 
   run() {
     this.levelLoad.getLevel(0)
-      .then((level) => {
+      .then((level: BaseLevel) => {
         this.map = new level.Map(this);
-        level.run(this);
+        level.run();
         this.player = <Player>this.addEntity(new Player(this, new Cord(10, 10)));
         this.loop();
       });
