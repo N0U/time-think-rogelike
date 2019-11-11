@@ -1,10 +1,16 @@
-import { KEYS } from 'rot-js';
 import Entity from '../entity';
 import MoveInputEvent from '../../events/move-input-event';
 import MoveAction from './move-action';
+import Cord from '../../utils/cord';
+import Game from '../../game';
+import Actor from '../actor';
+import Drawer from "../../graphics/drawer";
+import GameEvent from '../../events/game-event';
 
-export default class Player extends Entity {
-  constructor(game, cord) {
+export default class Player extends Entity implements Actor {
+  private prevCord: Cord;
+
+  constructor(game: Game, cord: Cord) {
     super(game, cord, '@');
     this.prevCord = null;
   }
@@ -13,7 +19,7 @@ export default class Player extends Entity {
     this.game.waitInput();
   }
 
-  draw(drawer) {
+  draw(drawer: Drawer) {
     super.draw(drawer);
 
     if (this.prevCord) {
@@ -21,14 +27,15 @@ export default class Player extends Entity {
     }
   }
 
-  onEvent(event) {
+  onEvent(event: GameEvent) {
     if (super.onEvent(event)) {
       return true;
     }
 
     if (event instanceof MoveInputEvent) {
+      const inputEvent = event as MoveInputEvent;
       this.prevCord = null;
-      const action = new MoveAction(this, event.direction);
+      const action = new MoveAction(this, inputEvent.direction);
       action.perform();
       this.actions.push(action);
       return true;

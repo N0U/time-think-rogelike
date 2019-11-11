@@ -1,14 +1,17 @@
+import Serializable from './serializable';
+
 export default class TimeMachine {
+  private maxLength: number;
+  private serializables: Set<Serializable>;
+  private worldSnapshots: Map<Serializable, any>[];
+
   constructor(maxLength) {
     this.maxLength = maxLength;
     this.serializables = new Set();
     this.worldSnapshots = [];
   }
 
-  add(o) {
-    if (typeof o.serialize !== 'function' || typeof o.deserialize !== 'function') {
-      throw new Error('Invalid serializable object');
-    }
+  add(o: Serializable) {
     this.serializables.add(o);
   }
 
@@ -23,7 +26,7 @@ export default class TimeMachine {
     }
   }
 
-  restoreWorld(n) {
+  restoreWorld(n: number) {
     const snapshot = this.worldSnapshots[this.worldSnapshots.length - n - 1];
     if (!snapshot) {
       throw new Error(`Invalid snapshot number: ${n}`);
@@ -33,14 +36,14 @@ export default class TimeMachine {
     }
   }
 
-  forgetAfter(n) {
+  forgetAfter(n: number) {
     if (n > this.worldSnapshots.length) {
       throw new Error('Cannot forget more elements than there are in history');
     }
     this.worldSnapshots = this.worldSnapshots.slice(0, this.worldSnapshots.length - n - 1);
   }
 
-  getHistoryLength() {
+  getHistoryLength(): number {
     return this.worldSnapshots.length;
   }
 }

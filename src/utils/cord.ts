@@ -1,20 +1,10 @@
 import { DIRS } from 'rot-js';
 
-interface CordInterface {
-    x:number | Cord
-    y:number
-    new (x: number| Cord, y: number): void;
-    toString(): void
-    toId(): void
-    moveToDirection(string): void
-    add(Cord): void
-    sub(Cord): void
-    equals(Cord): void
-}
+export default class Cord {
+  x:number;
+  y:number;
 
-export default class Cord implements CordInterface {
-    x; y;
-  constructor(x, y) {
+  constructor(x?: number | Cord, y?: number) {
     if (typeof x === 'number' && typeof y === 'number') {
       this.x = x;
       this.y = y;
@@ -27,19 +17,19 @@ export default class Cord implements CordInterface {
     }
   }
 
-  toString() {
+  toString(): string {
     return `${this.x}x${this.y}`;
   }
 
-  toId() {
+  toId(): string {
     return this.toString();
   }
 
-  moveToDirection(dir) {
+  moveToDirection(dir: number): Cord {
     return this.add(Cord.fromDirection(dir));
   }
 
-  add(cord) {
+  add(cord: Cord): Cord {
     return new Cord(this.x + cord.x, this.y + cord.y);
   }
 
@@ -47,7 +37,7 @@ export default class Cord implements CordInterface {
     return new Cord(this.x - cord.x, this.y - cord.y);
   }
 
-  static fromDirection(dir) {
+  static fromDirection(dir: number): Cord {
     if (dir < 0 || dir >= 4) {
       throw new Error('Direction must be between 0 and 3');
     }
@@ -55,7 +45,7 @@ export default class Cord implements CordInterface {
     return new Cord(mv[0], mv[1]);
   }
 
-  equals(cord) {
+  equals(cord): boolean {
     if (!cord || !(cord instanceof Cord)) {
       return false;
     }

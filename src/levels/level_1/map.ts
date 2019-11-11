@@ -1,3 +1,3 @@
-import Map from '../../map';
+import GameMap from '../../game-map';
 
-export default class Level1Map extends Map {}
+export default class Level1Map extends GameMap {}

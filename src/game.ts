@@ -1,18 +1,35 @@
 import { Display, KEYS, Scheduler } from 'rot-js';
 import Cord from './utils/cord';
-import EventBus from './event-bus';
+import EventBus from './events/event-bus';
 import MoveInputEvent from './events/move-input-event';
 import Player from './actors/player/player';
-import TimeMachine from './time-machine';
+import TimeMachine from './time-machine/time-machine';
 import DisplayDrawer from './graphics/display-drawer';
-import Drawer from './graphics/drawer';
+import ChildDrawer from './graphics/child-drawer';
 import LevelLoader from './level-loader';
+import Drawer from './graphics/drawer';
+import Entity from './actors/entity';
+import GameMap from './game-map';
+import GameEvent from "./events/game-event";
 
 export default class Game {
+  readonly drawer: DisplayDrawer;
+  private gameDrawer: Drawer;
+  private uiDrawer: Drawer;
+  private scheduler: any;
+  private eventBus: EventBus;
+  private entities: Set<Entity>;
+  private timeMachine: TimeMachine;
+  private lock: boolean;
+  private timeTravel: number;
+  private levelLoad: LevelLoader;
+  private map: GameMap;
+  private player: Player;
+
   constructor() {
     this.drawer = new DisplayDrawer();
-    this.gameDrawer = new Drawer(this.drawer);
-    this.uiDrawer = new Drawer(this.drawer);
+    this.gameDrawer = new ChildDrawer(this.drawer);
+    this.uiDrawer = new ChildDrawer(this.drawer);
     this.scheduler = new Scheduler.Simple();
     this.eventBus = new EventBus();
     this.eventBus.subscribe(this);
@@ -28,7 +45,7 @@ export default class Game {
       .then((level) => {
         this.map = new level.Map(this);
         level.run(this);
-        this.player = this.addEntity(new Player(this, new Cord(10, 10)));
+        this.player = <Player>this.addEntity(new Player(this, new Cord(10, 10)));
         this.loop();
       });
   }
@@ -123,19 +140,18 @@ export default class Game {
     this.uiDrawer.draw(new Cord(2 + i, 0), ']', color, 'gray');
   }
 
-  addEntity(entity) {
+  addEntity(entity: Entity) {
     this.entities.add(entity);
     this.timeMachine.add(entity);
+    // @ts-ignore
     if (entity.act) {
       this.scheduler.add(entity, true);
     }
-    if (entity.onEvent) {
-      this.eventBus.subscribe(entity);
-    }
+    this.eventBus.subscribe(entity);
     return entity;
   }
 
-  getCollisions() {
+  getCollisions(): Map<string, any> {
     const collisions = new Map();
     for (const e of this.entities) {
       const id = e.cord.toId();
@@ -148,7 +164,7 @@ export default class Game {
     return collisions;
   }
 
-  checkCollision(cord) {
+  checkCollision(cord: Cord): any {
     if (!this.map.isFree(cord)) {
       return true;
     }
@@ -161,7 +177,7 @@ export default class Game {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  onEvent(e) {
+  onEvent(e: GameEvent) {
     console.log(e.toString());
   }
 }

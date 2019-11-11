@@ -1,4 +1,19 @@
-export default class Entity {
+import Game from '../game';
+import Cord from '../utils/cord';
+import Action from './action';
+import GameEvent from '../events/game-event';
+import EventListener from '../events/event-listener';
+import Drawer from '../graphics/drawer';
+import Serializable from '../time-machine/serializable';
+
+export default class Entity implements EventListener, Serializable {
+  readonly game: Game;
+  cord: Cord;
+  symbol: string;
+  color: string;
+  actions: Action[];
+  dead: boolean;
+
   constructor(game, cord, symbol, color = 'white') {
     this.game = game;
     this.cord = cord;
@@ -8,7 +23,7 @@ export default class Entity {
     this.dead = false;
   }
 
-  draw(drawer) {
+  draw(drawer: Drawer) {
     drawer.draw(this.cord, this.symbol, this.color);
   }
 
@@ -16,7 +31,7 @@ export default class Entity {
     this.actions = [];
   }
 
-  onEvent(event) {
+  onEvent(event: GameEvent) {
     for (const a of this.actions) {
       if (a.onEvent(event)) {
         return true;
@@ -25,7 +40,7 @@ export default class Entity {
     return false;
   }
 
-  serialize() {
+  serialize(): any {
     const { cord, symbol, color, dead } = this;
     return {
       cord,
@@ -35,7 +50,7 @@ export default class Entity {
     };
   }
 
-  deserialize(o) {
+  deserialize(o: any) {
     this.cord = o.cord;
     this.symbol = o.symbol;
     this.color = o.color;
