@@ -18,6 +18,7 @@ export default class Level1Map extends GameMap {
     this.dispalyOptions.height = 100;
     this.dispalyOptions.fontSize = 10;
     game.drawer.display.setOptions(this.dispalyOptions);
+    game.gameDrawer.moveCard = true;
     this.game.refrech();
     this.cellular = new ROT.Map.Cellular(this.dispalyOptions.width, this.dispalyOptions.height, {
       topology: 6,
@@ -50,7 +51,7 @@ export default class Level1Map extends GameMap {
     for (let i = 4; i >= 0; i--) {
       this.cellular.create(i ? null : (i, j, what) => {
         this.set(new Cord(i, j), new Tile({
-          isWall: false,
+          isWall: !what,
           bgColor: colors[what % colors.length]
         }));
       });

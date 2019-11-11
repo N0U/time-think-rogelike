@@ -15,7 +15,7 @@ import {BaseLevel} from "./levels/abc";
 
 export default class Game {
   readonly drawer: DisplayDrawer;
-  private gameDrawer: Drawer;
+  public gameDrawer: Drawer;
   private uiDrawer: Drawer;
   private scheduler: any;
   private eventBus: EventBus;
