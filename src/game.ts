@@ -15,7 +15,7 @@ import {BaseLevel} from "./levels/abc";
 
 export default class Game {
   readonly drawer: DisplayDrawer;
-  private gameDrawer: Drawer;
+  public gameDrawer: Drawer;
   private uiDrawer: Drawer;
   private scheduler: any;
   private eventBus: EventBus;
@@ -42,7 +42,7 @@ export default class Game {
   }
 
   run() {
-    this.levelLoad.getLevel(0)
+    this.levelLoad.getLevel(1)
       .then((level: BaseLevel) => {
         this.map = new level.Map(this);
         level.run();
@@ -180,5 +180,17 @@ export default class Game {
   // eslint-disable-next-line class-methods-use-this
   onEvent(e: GameEvent) {
     console.log(e.toString());
+  }
+
+  onInit(callback: (Game) => void | undefined): void {
+    if (callback) {
+      // @ts-ignore
+      this.onInit.callback = callback;
+    }
+  }
+
+  refrech() {
+    // @ts-ignore
+    this.onInit.callback && this.onInit.callback(this);
   }
 }
