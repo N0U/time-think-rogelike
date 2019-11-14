@@ -4,6 +4,7 @@ import {BaseLevel, GameConstructor} from "../abc";
 import Game from "../../game";
 import Action from "../../actors/action";
 import GameMap from "../../game-map";
+import Player from "../../actors/player/player";
 
 export default class Level extends BaseLevel {
     game: Game;
@@ -18,6 +19,7 @@ export default class Level extends BaseLevel {
     }
 
     run() {
+        this.game.addEntity(new Player(this.game, new Cord(10, 10)));
         for (let i = 0; i < 10; i += 1) {
             this.game.addEntity(new Box(this.game, new Cord(12, 10 + i)));
         }

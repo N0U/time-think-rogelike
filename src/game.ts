@@ -26,11 +26,17 @@ export default class Game {
   private levelLoad: LevelLoader;
   private map: GameMap;
   private player: Player;
+  private levelNumber: number;
 
   constructor() {
     this.drawer = new DisplayDrawer();
     this.gameDrawer = new ChildDrawer(this.drawer);
     this.uiDrawer = new ChildDrawer(this.drawer);
+    this.levelLoad = new LevelLoader(this);
+    this.levelNumber = 0;
+  }
+
+  loadLevel() {
     this.scheduler = new Scheduler.Simple();
     this.eventBus = new EventBus();
     this.eventBus.subscribe(this);
@@ -38,17 +44,18 @@ export default class Game {
     this.timeMachine = new TimeMachine(10);
     this.lock = false;
     this.timeTravel = null;
-    this.levelLoad = new LevelLoader(this);
+
+    this.levelLoad.getLevel(this.levelNumber)
+        .then((level: BaseLevel) => {
+          this.map = new level.Map(this);
+          level.run();
+          this.loop();
+        });
+    this.levelNumber += 1;
   }
 
   run() {
-    this.levelLoad.getLevel(0)
-      .then((level: BaseLevel) => {
-        this.map = new level.Map(this);
-        level.run();
-        this.player = <Player>this.addEntity(new Player(this, new Cord(10, 10)));
-        this.loop();
-      });
+    this.loadLevel();
   }
 
   loop() {
@@ -149,6 +156,10 @@ export default class Game {
       this.scheduler.add(entity, true);
     }
     this.eventBus.subscribe(entity);
+
+    if(entity instanceof Player) {
+      this.player = <Player>entity;
+    }
     return entity;
   }
 
