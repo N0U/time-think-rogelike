@@ -11,7 +11,7 @@ import Drawer from './graphics/drawer';
 import Entity from './actors/entity';
 import GameMap from './game-map';
 import GameEvent from "./events/game-event";
-import {BaseLevel} from "./levels/abc";
+import {Level} from "./levels/level";
 
 export default class Game {
   readonly drawer: DisplayDrawer;
@@ -26,14 +26,13 @@ export default class Game {
   private levelLoad: LevelLoader;
   private map: GameMap;
   private player: Player;
-  private levelNumber: number;
+  private level: Level;
 
   constructor() {
     this.drawer = new DisplayDrawer();
     this.gameDrawer = new ChildDrawer(this.drawer);
     this.uiDrawer = new ChildDrawer(this.drawer);
-    this.levelLoad = new LevelLoader(this);
-    this.levelNumber = 0;
+    this.levelLoad = new LevelLoader();
   }
 
   loadLevel() {
@@ -45,17 +44,13 @@ export default class Game {
     this.lock = false;
     this.timeTravel = null;
 
-    this.levelLoad.getLevel(this.levelNumber)
-        .then((level: BaseLevel) => {
-          this.map = new level.Map(this);
-          level.run();
-          this.loop();
-        });
-    this.levelNumber += 1;
+    this.level = this.levelLoad.loadLevel(this);
+    this.map = this.level.map;
   }
 
   run() {
     this.loadLevel();
+    this.loop();
   }
 
   loop() {
@@ -190,6 +185,7 @@ export default class Game {
 
   // eslint-disable-next-line class-methods-use-this
   onEvent(e: GameEvent) {
+    this.level.onEvent(e);
     console.log(e.toString());
   }
 }

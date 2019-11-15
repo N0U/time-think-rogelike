@@ -1,37 +1,28 @@
 import Level1 from './levels/level_1';
 import Game from "./game";
-import {BaseLevel, LevelConstructor} from "./levels/abc";
+import {Level, LevelConstructor} from "./levels/level";
 
-const levels: LevelConstructor[] = [];
+const LEVELS: LevelConstructor[] = [
+  Level1,
+];
 
 export default class LevelLoader {
-    public currentLevel: BaseLevel | undefined;
-    public currentNum: number | undefined;
+  private currentLevelIndex: number;
 
-    constructor(public game: Game) {
-        this.game = game;
-        this.currentLevel = undefined;
-        this.currentNum = undefined;
-    }
+  constructor() {
+    this.currentLevelIndex = 0;
+  }
 
-    getLevel(number: number): Promise<BaseLevel> {
-        if (number === this.currentNum) {
-            return Promise.resolve(this.currentLevel);
-        }
-        this.currentNum = number;
-        if (!levels[number]) {
-            return new Promise((resolve, reject) => {
-                resolve(this.currentLevel = new levels[number](this.game));
-            });
-        }
-        this.currentLevel = new levels[number](this.game);
-        return Promise.resolve(this.currentLevel);
-    }
+  get levelIndex(): number {
+    return this.currentLevelIndex;
+  }
+
+  loadLevel(game: Game): Level {
+    const NextLevel = LEVELS[this.currentLevelIndex];
+    return new NextLevel(game);
+  }
+
+  nextLevel() {
+    this.currentLevelIndex += 1;
+  }
 }
-
-function register(level: LevelConstructor) {
-    levels.push(level);
-};
-
-
-register(Level1);
