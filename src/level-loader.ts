@@ -1,4 +1,4 @@
-import Level from './levels/level_1';
+import Level1 from './levels/level_1';
 import Game from "./game";
 import {BaseLevel, LevelConstructor} from "./levels/abc";
 
@@ -34,4 +34,4 @@ function register(level: LevelConstructor) {
 };
 
 
-register(Level);
+register(Level1);

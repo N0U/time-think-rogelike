@@ -3,10 +3,10 @@ import Cord from '../../utils/cord';
 import {BaseLevel, GameConstructor} from "../abc";
 import Game from "../../game";
 import Action from "../../actors/action";
-import GameMap from "../../game-map";
+import GameMap, {Tile} from "../../game-map";
 import Player from "../../actors/player/player";
 
-export default class Level extends BaseLevel {
+export default class Level1 extends BaseLevel {
     game: Game;
     actions: Action[];
     Map: GameConstructor;
