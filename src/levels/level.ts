@@ -7,6 +7,7 @@ import Entity from "../actors/entity";
 import Box from "../actors/box";
 import Player from "../actors/player/player";
 import GameEvent from "../events/game-event";
+import Terminal from "../actors/terminal";
 
 export abstract class Level implements EventListener {
   readonly game: Game;
@@ -33,6 +34,9 @@ export abstract class Level implements EventListener {
               break;
             case '@':
               this.addEntity(new Player(game, cord), 'player');
+              break;
+            case 'T':
+              this.addEntity(new Terminal(game, cord), c[1]);
               break;
           }
         }
