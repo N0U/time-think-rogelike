@@ -57,6 +57,10 @@ module.exports = {
           'css-loader',
         ],
       },
+      {
+        test: /\.csv$/i,
+        use: 'raw-loader',
+      },
     ],
 
   },

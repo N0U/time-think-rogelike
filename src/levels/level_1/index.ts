@@ -5,17 +5,12 @@ import Game from "../../game";
 import GameMap, {Tile} from "../../game-map";
 import Player from "../../actors/player/player";
 import GameEvent from "../../events/game-event";
+import Level1Csv from '../../assets/level1.csv';
 
-export default class Level1 implements Level {
-  readonly game: Game;
-  readonly map: GameMap;
+export default class Level1 extends Level {
 
   constructor(game: Game) {
-    this.game = game;
-    this.map = new GameMap(game);
-
-    this.game.addEntity(new Player(this.game, new Cord(1, 1)));
-    this.game.addEntity(new Box(this.game, new Cord(3, 1)));
+    super(game, Level1Csv);
   }
 
   onEvent(event: GameEvent) {

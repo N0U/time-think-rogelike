@@ -31,13 +31,6 @@ export default class GameMap {
     this.minY = 0;
     this.maxX = 0;
     this.maxY = 0;
-    /*for (const c of cordsInRectangle(0, 0, 50, 50)) {
-      if (c.x === 0 || c.y === 0 || c.x === 50 || c.y === 50) {
-        this.set(c, new Tile(true, '#'));
-      } else {
-        this.set(c, new Tile(false,'.', 'black','gray'));
-      }
-    }*/
   }
 
   set(cord: Cord, tile: Tile) {
